@@ -50,7 +50,6 @@ jobs:
   e2e-tests:
     name: Playwright E2E Tests
     runs-on: ubuntu-latest
-    needs: [backend-build-test, frontend-build]
     steps:
       - uses: actions/checkout@v4
       
@@ -61,6 +60,30 @@ jobs:
           distribution: 'temurin'
           cache: maven
           
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+          
+      - name: Start Backend
+        working-directory: ./backend
+        run: |
+          chmod +x mvnw
+          ./mvnw spring-boot:run -Dspring-boot.run.profiles=test &
+          
+      - name: Start Frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run dev &
+          
+      - name: Wait for services
+        run: |
+          sleep 30
+          curl --retry 5 --retry-connrefused --retry-delay 5 http://localhost:8080/api/books || true
+          
       - name: Run E2E Tests
         working-directory: ./e2e-tests
         run: mvn test
@@ -68,7 +91,6 @@ jobs:
   perf-tests:
     name: Gatling Performance Tests
     runs-on: ubuntu-latest
-    needs: [backend-build-test]
     steps:
       - uses: actions/checkout@v4
       
@@ -78,6 +100,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+          
+      - name: Start Backend
+        working-directory: ./backend
+        run: |
+          chmod +x mvnw
+          ./mvnw spring-boot:run -Dspring-boot.run.profiles=test &
+          
+      - name: Wait for backend
+        run: |
+          sleep 30
+          curl --retry 5 --retry-connrefused --retry-delay 5 http://localhost:8080/api/books || true
           
       - name: Run Performance Tests
         working-directory: ./perf-tests
