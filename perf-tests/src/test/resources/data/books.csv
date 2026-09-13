@@ -1,0 +1,6 @@
+title,author,category,publicationYear,description,coverImageUrl
+The Gatling Book,Stress Tester,Tech,2023,A book about load testing.,https://example.com/gatling.jpg
+Advanced Performance,QA Guru,Tech,2022,Performance tuning guide.,https://example.com/perf.jpg
+Load Testing 101,John Doe,Education,2021,Beginner guide to load.,https://example.com/load.jpg
+Scaling Java Apps,Jane Smith,Tech,2024,How to scale Java backends.,https://example.com/scale.jpg
+Vue and Gatling,Full Stack Dev,Tech,2023,End-to-end performance.,https://example.com/vue.jpg

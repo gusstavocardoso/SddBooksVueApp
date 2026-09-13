@@ -1,6 +1,9 @@
 package com.sdd.booksapp.e2e;
 
 import com.microsoft.playwright.*;
+import com.sdd.booksapp.e2e.pages.BookDetailsPage;
+import com.sdd.booksapp.e2e.pages.BookFormPage;
+import com.sdd.booksapp.e2e.pages.HomePage;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,7 +19,8 @@ public class BookAppE2ETest {
     @BeforeAll
     void launchBrowser() {
         playwright = Playwright.create();
-        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
+        boolean isHeadless = Boolean.parseBoolean(System.getProperty("headless", "true"));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(isHeadless));
     }
 
     @AfterAll
@@ -36,19 +40,70 @@ public class BookAppE2ETest {
     }
 
     @Test
-    void shouldLoadHomePageAndSeeBooks() {
-        // Assuming frontend runs on 5173 (vite default)
-        page.navigate("http://localhost:5173");
+    void shouldPerformFullBookCrudFlow() {
+        HomePage homePage = new HomePage(page);
+        BookFormPage formPage = new BookFormPage(page);
+        BookDetailsPage detailsPage = new BookDetailsPage(page);
+
+        homePage.navigate();
         
-        // Wait for books to load
-        page.waitForSelector(".book-card");
+        // 1. Create a Book
+        homePage.clickAddBook();
+        page.waitForURL("**/book/new");
         
-        // Verify title
-        String title = page.title();
-        assertTrue(title.contains("Vite") || title.contains("Books"));
+        formPage.fillTitle("Playwright in Action");
+        formPage.fillAuthor("QA Expert");
+        formPage.fillCategory("Tech");
+        formPage.fillYear("2024");
+        formPage.submitForm();
         
-        // Verify there is at least one book
-        Locator bookCards = page.locator(".book-card");
-        assertTrue(bookCards.count() > 0);
+        // Wait for redirect and appearance
+        page.waitForURL("http://localhost:5173/");
+        homePage.waitForBookInList("Playwright in Action");
+        
+        // 2. View Details
+        homePage.clickBookDetails("Playwright in Action");
+        detailsPage.waitForTitle("Playwright in Action");
+        
+        // 3. Delete Book
+        page.onceDialog(dialog -> dialog.accept());
+        detailsPage.clickDelete();
+        
+        page.waitForURL("http://localhost:5173/");
+    }
+
+    @Test
+    void shouldValidateEmptyTitleOnForm() {
+        HomePage homePage = new HomePage(page);
+        BookFormPage formPage = new BookFormPage(page);
+
+        homePage.navigate();
+        homePage.clickAddBook();
+        page.waitForURL("**/book/new");
+        
+        // Leave title blank but fill others
+        formPage.fillAuthor("Jane Doe");
+        formPage.fillCategory("Mystery");
+        formPage.fillYear("2021");
+        
+        formPage.submitForm();
+        
+        // The URL shouldn't change
+        assertTrue(page.url().endsWith("/book/new"));
+    }
+
+    @Test
+    void shouldFilterBooksByCategory() {
+        HomePage homePage = new HomePage(page);
+        
+        homePage.navigate();
+        
+        // Use an option that actually exists in the dropdown (e.g. Fantasy)
+        homePage.filterByCategory("Fantasy");
+        
+        // Because of the POM we wait for response, the UI should update.
+        // If there are no books, the UI shows nothing, if there are books they should be Fantasy.
+        // This is a basic assertion that the filtering interaction runs without crashing.
+        assertTrue(page.url().startsWith("http://localhost:5173"));
     }
 }

@@ -5,34 +5,34 @@
       
       <form @submit.prevent="saveBook">
         <div class="form-group">
-          <label class="form-label">Title</label>
-          <input type="text" v-model="book.title" class="form-control" required>
+          <label class="form-label" for="title">Title</label>
+          <input id="title" type="text" v-model="book.title" class="form-control" required>
         </div>
         
         <div class="form-group">
-          <label class="form-label">Author</label>
-          <input type="text" v-model="book.author" class="form-control" required>
+          <label class="form-label" for="author">Author</label>
+          <input id="author" type="text" v-model="book.author" class="form-control" required>
         </div>
         
         <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
           <div class="form-group" style="flex: 1; margin-bottom: 0;">
-            <label class="form-label">Category</label>
-            <input type="text" v-model="book.category" class="form-control" required>
+            <label class="form-label" for="category">Category</label>
+            <input id="category" type="text" v-model="book.category" class="form-control" required>
           </div>
           <div class="form-group" style="width: 150px; margin-bottom: 0;">
-            <label class="form-label">Year</label>
-            <input type="number" v-model="book.publicationYear" class="form-control" required>
+            <label class="form-label" for="publicationYear">Publication Year</label>
+            <input id="publicationYear" type="number" v-model="book.publicationYear" class="form-control" required>
           </div>
         </div>
         
         <div class="form-group">
-          <label class="form-label">Cover Image URL</label>
-          <input type="url" v-model="book.coverImageUrl" class="form-control">
+          <label class="form-label" for="coverImageUrl">Cover Image URL</label>
+          <input id="coverImageUrl" type="url" v-model="book.coverImageUrl" class="form-control">
         </div>
         
         <div class="form-group">
-          <label class="form-label">Description</label>
-          <textarea v-model="book.description" class="form-control" rows="5"></textarea>
+          <label class="form-label" for="description">Description</label>
+          <textarea id="description" v-model="book.description" class="form-control" rows="5"></textarea>
         </div>
         
         <div style="display: flex; gap: 1rem; margin-top: 2rem;">

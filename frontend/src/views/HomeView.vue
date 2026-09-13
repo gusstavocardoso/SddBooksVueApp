@@ -2,8 +2,8 @@
   <div class="home">
     <div class="filters glass-panel" style="margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
       <div class="form-group" style="margin-bottom: 0;">
-        <label class="form-label">Category Filter</label>
-        <select v-model="category" @change="fetchBooks" class="form-control" style="width: 200px;">
+        <label class="form-label" for="categoryFilter">Category Filter</label>
+        <select id="categoryFilter" v-model="category" @change="fetchBooks" class="form-control" style="width: 200px;">
           <option value="">All Categories</option>
           <option value="Fantasy">Fantasy</option>
           <option value="Science Fiction">Science Fiction</option>
@@ -13,8 +13,8 @@
       </div>
 
       <div class="form-group" style="margin-bottom: 0;">
-        <label class="form-label">Sort By</label>
-        <select v-model="sortBy" @change="fetchBooks" class="form-control" style="width: 200px;">
+        <label class="form-label" for="sortBy">Sort By</label>
+        <select id="sortBy" v-model="sortBy" @change="fetchBooks" class="form-control" style="width: 200px;">
           <option value="">Default</option>
           <option value="name">Name (A-Z)</option>
           <option value="year">Publication Year (Newest)</option>

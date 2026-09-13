@@ -68,6 +68,11 @@ cd e2e-tests
 mvn clean test
 ```
 
+To run the E2E tests in **headed mode** (seeing the browser UI) for debugging, use the `headless` system property:
+```bash
+mvn clean test -Dheadless=false
+```
+
 ### Performance Tests (Gatling)
 Ensure the backend is running, then execute:
 ```bash
