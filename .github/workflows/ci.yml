@@ -22,7 +22,9 @@ jobs:
           
       - name: Build and Test Backend
         working-directory: ./backend
-        run: ./mvnw clean install -DskipTests=false
+        run: |
+          chmod +x mvnw
+          ./mvnw clean install -DskipTests=false
         # In a real environment, we would spin up a SQL Server service container here for the integration tests.
         # For demonstration purposes, we assume tests can run or mock DB.
 
